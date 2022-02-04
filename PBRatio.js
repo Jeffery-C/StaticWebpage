@@ -28,8 +28,9 @@ function getJsonData() {
     }
 
     if (xhr) {
+        var versionUpdate = (new Date()).getTime();
         xhr.onreadystatechange = showData;
-        xhr.open("GET", "data.txt");
+        xhr.open("GET", ("data.txt?v=" + versionUpdate));
         xhr.responseType = "text";
         xhr.send(null);
     }
