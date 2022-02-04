@@ -41,7 +41,7 @@ function getJsonData() {
 
 function showData() {
     const colName = ["name", "exchangeName", "closePriceTime", "closePrice", "bookValue", "P/B Ratio"];
-    var tempH2, tempH3, tempTable, tempThead, tempTh, tempTbody, tempTfoot, tempValue, tempTr, tempTd, price, bookValue;
+    var tempH2, tempH3, tempBody, tempDiv, tempTable, tempThead, tempTh, tempTbody, tempTfoot, tempValue, tempTr, tempTd, price, bookValue;
     var RowInex = 0;
 
     if (xhr.readyState == 4) {
@@ -50,6 +50,11 @@ function showData() {
             const data = JSON.parse(caesar(stringData, userNumber, "decode").replaceAll("'", '"'));
             const stockData = data["stockData"];
             const updateTime = data["updateTime"];
+            
+            tempDiv = document.getElementsByTagName("div")[0];
+            tempBody = document.getElementsByTagName("body")[0];
+            tempBody.removeChild(tempDiv);
+            tempDiv = document.createElement("div");
             
             tempH3 = document.createElement("h3");
             tempH3.innerHTML = "Update Time: " + updateTime;
@@ -60,7 +65,7 @@ function showData() {
 
                 tempH2 = document.createElement("h2");
                 tempH2.innerHTML = toTitleCase(industry);
-                document.getElementsByTagName("body")[0].appendChild(tempH2);
+                tempDiv.appendChild(tempH2);
 
                 tempTable = document.createElement("table");
                 tempThead = document.createElement("thead");
@@ -135,12 +140,12 @@ function showData() {
                 
                 tempTable.setAttribute("align", "center");
                 tempTable.setAttribute("cellpadding", "5px");
-                document.getElementsByTagName("body")[0].appendChild(tempTable);
+                tempDiv.appendChild(tempTable);
                 var tempBr = document.createElement("br");
-                document.getElementsByTagName("body")[0].appendChild(tempBr);
+                tempDiv.appendChild(tempBr);
 
             }
-            
+            tempBody.appendChild(tempDiv);
 
             
         }
