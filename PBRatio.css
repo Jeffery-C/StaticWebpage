@@ -1,0 +1,15 @@
+body {
+    background-color: #FFF;
+}
+
+.centered {
+    text-align: center;
+}
+
+label {
+    padding-right: 10px;
+}
+
+table, th{
+    border: 1px solid black;
+}
