@@ -58,7 +58,7 @@ function showData() {
             
             tempH3 = document.createElement("h3");
             tempH3.innerHTML = "Update Time: " + updateTime;
-            document.getElementsByTagName("body")[0].appendChild(tempH3);
+            tempDiv.appendChild(tempH3);
 
             for (var industry in stockData) {
                 RowInex = 0;
