@@ -37,7 +37,7 @@ function getJsonData() {
     else {
         alert("Sorry, but I couldn't create an XMLHttpRequest.")
     }
-    setTimeout(getJsonData, 1000);
+    setTimeout(getJsonData, 5*1000);
 }
 
 function showData() {
