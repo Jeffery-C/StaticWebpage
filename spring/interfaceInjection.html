@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Interface Injection</title>
+
+    <!-- bootstap css and javascript default -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- code block style -->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=sunburst"></script>
+    <style>
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8 {
+          list-style-type: decimal !important;
+        }
+    </style>
+
+    <!-- my css -->
+    <link rel="stylesheet" href="/staticWebpage/resources/css/styles.css">
+
+</head>
+
+<body>
+
+    <section>
+
+        <div class="container">
+            <a href="/staticWebpage/index.html">首頁</a>
+            <h2>Interface Injection (介面注入)</h2>
+            <p>在mainApp中使用interface的class來建立物件</p>
+            <p>建構過程如下，首先建立要使用的interface class</p>
+    
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+public interface Coach {
+    
+    public String getDailyWorkout();
+    
+}
+            </code></pre>
+
+            <p>接著建立需要執行的多個class</p>
+            <p>1.BaseballCoach.java</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+public class BaseballCoach implements Coach {
+    
+    @Override
+    public String getDailyWorkout() {
+        return "Spend 30 minutes on batting practice";
+    }
+
+}
+            </code></pre>
+            <p>2.TrackCoach.java</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+public class TrackCoach implements Coach {
+    
+    @Override
+    public String getDailyWorkout() {
+        return "Run a hard 5k";
+    }
+
+}
+            </code></pre>
+            <p>最後建立我們的mainApp</p>
+            <pre class="prettyprint linenums"><code class="langauage-java">
+package com.luv2code.springdemo;
+
+public class MyApp {
+
+    public static void main(String[] args) {
+
+        // create the object
+        Coach theCoach = new BaseballCoach();
+        
+        // use the object
+        System.out.println(theCoach.getDailyWorkout());
+
+        Coach theCoach = new TrackCoach();
+
+        System.out.println(theCoach.getDailyWorkout());
+    }
+
+}
+            </code></pre>
+            <p>可以看到當需要更換interface class的物件Coach時，我們只需要更改右方物件名稱即可其餘地方不須更動，另外interface class底下的class必須有interface class的方法，因此不需擔心建立物件時沒有方法。</p>
+        </div>
+
+
+    </section>
+    
+</body>
+
+
+</html>
