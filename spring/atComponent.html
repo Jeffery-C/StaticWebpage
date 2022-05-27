@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>@Component</title>
+
+    <!-- bootstap css and javascript default -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- code block style -->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=sunburst"></script>
+    <style>
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8 {
+          list-style-type: decimal !important;
+        }
+    </style>
+
+    <!-- my css -->
+    <link rel="stylesheet" href="/staticWebpage/resources/css/styles.css">
+
+</head>
+
+<body>
+
+    <section>
+        <div class="container">
+            <a href="/staticWebpage/index.html">首頁</a>
+            <h2>using @Component</h2>
+            <p>這章節我們將會用@Component取代bean tag.</p>
+            <p>首先建立interface class</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+public interface Coach {
+    
+    public String getDailyWorkout();
+    
+}
+            </code></pre>
+            <p>接著建立底下的class, 其中加入@Component, 其變數放bean id屬性的名稱, 可省略不寫, 其默認值為class名稱(第一個字小寫, 即tennisCoach).</p>
+            <p>TennisCoach.java</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+import org.springframework.stereotype.Component;
+
+@Component("thatSillyCoach")
+public class TennisCoach implements Coach {
+    
+    @Override
+    public String getDailyWorkout() {
+        System.out.println("Email: " + email + ", Team: " + team);
+        return "Pratice your backhand volley";
+    }
+
+}
+            </code></pre>
+            <p>接著在xml裡加入component scan, 他會掃描base-package位址底下所有的@Component.</p>
+            <pre class="prettyprint linenums"><code class="language-xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; 
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
+    
+    &lt;!-- add entry to enable component scanning --&gt;
+    
+    &lt;context:component-scan base-package=&quot;com.luv2code.springdemo&quot; /&gt;
+    
+&lt;/beans&gt;
+            </code></pre>
+
+            <p>最後是我們的mainApp, 與用bean tag的用法一樣.</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class AnnotationDemoApp {
+
+    public static void main(String[] args) {
+        
+        // read spring config file
+        ClassPathXmlApplicationContext context = 
+                new ClassPathXmlApplicationContext("applicationContext.xml");
+        
+        // get the bean from spring container
+        Coach theCoach = context.getBean("thatSillyCoach", Coach.class);
+        
+        // call a method on the bean
+        System.out.println(theCoach.getDailyWorkout());
+        
+        // close the context
+        context.close();
+    }
+
+}
+            </code></pre>
+
+        </div>
+    </section>
+    
+</body>
+
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Setter Injection</title>
+
+    <!-- bootstap css and javascript default -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- code block style -->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=sunburst"></script>
+    <style>
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8 {
+          list-style-type: decimal !important;
+        }
+    </style>
+
+    <!-- my css -->
+    <link rel="stylesheet" href="/staticWebpage/resources/css/styles.css">
+
+</head>
+
+<body>
+
+    <section>
+        <div class="container">
+            <a href="/staticWebpage/index.html">首頁</a>
+            <h2>Using spring in xml setter injection with string value which injects value from properties file.</h2>
+            <p>在上一篇(<a href="/staticWebpage/spring/makeSIinXmlwithString.html">使用spring在xml裡做setter Injection with string value</a> )裡我們用value屬性給值, 現在我們想在properties file給值然後inject到xml.</p>
+
+            <p>首先建立sport.proerties(沒有附檔名), 檔案放在與class同一個資料夾裡. </p>
+            <pre class="prettyprint linenums"><code class="language-xml">
+foo.email=myeasycoach@luv2code.com
+foo.team=Royal Challengers Bangalore
+            </code></pre>
+            
+            <p>接著在xml裡面載入我們的properties file, 然後將value的值改用變數放入, "${變數名}". </p>
+
+            <pre class="prettyprint linenums"><code class="language-xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; 
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
+
+    &lt;!-- load the properties file: sport.properties --&gt;
+    &lt;context:property-placeholder location=&quot;classpath:sport.properties&quot;/&gt;
+
+    &lt;!-- Define your beans here --&gt;
+    
+    &lt;!-- define the dependency --&gt;
+    &lt;bean id=&quot;myFortuneService&quot;
+        class=&quot;com.luv2code.springdemo.HappyFortuneService&quot;&gt;
+    &lt;/bean&gt;
+    
+    &lt;bean id=&quot;myCoach&quot;
+        class=&quot;com.luv2code.springdemo.TrackCoach&quot;&gt;
+        
+        &lt;!-- set up setter injection --&gt;
+        &lt;property name=&quot;fortuneService&quot; ref=&quot;myFortuneService&quot;/&gt;
+        
+        &lt;!-- set up setter injection with string value --&gt;
+        &lt;property name=&quot;emailAddress&quot; value=&quot;${foo.email}&quot; /&gt;
+        &lt;property name=&quot;team&quot; value=&quot;${foo.team}&quot; /&gt;
+        
+    &lt;/bean&gt;
+    
+&lt;/beans&gt;
+            </code></pre>
+
+        </div>
+    </section>
+    
+</body>
+
+
+</html>

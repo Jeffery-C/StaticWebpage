@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Using spring make constructor injection in xml</title>
+    <title>Setter Injection</title>
 
     <!-- bootstap css and javascript default -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -27,10 +27,9 @@
     <section>
         <div class="container">
             <a href="/staticWebpage/index.html">首頁</a>
-            <h2>CI in xml</h2>
-            <p>這裡我們會建構2個interface class (FortuneService, Coach), 其中FortuneService會injection到Coach, 即使用constructor injection.</p>
+            <h2>Using spring make setter injection in xml</h2>
+            <p>這裡我們會建構2個interface class (FortuneService, Coach), 其中FortuneService會injection到Coach, 即使用setter injection.</p>
             <p>首先建立低階class(注入的物件), 即FortuneService.</p>
-
             <p>1.FortuneService.java</p>
             <pre class="prettyprint linenums"><code class="language-java">
 package com.luv2code.springdemo;
@@ -50,22 +49,13 @@ public class HappyFortuneService implements FortuneService {
 
     @Override
     public String getFortune() {
-        int r = 0;
-        r = (int) (Math.random()*3);
-        String[] messages = {
-                "Today is your lucky day!", 
-                "Today is bad day!",
-                "Today is your beautiful day!"
-                };
-
-        return messages[r];
+        return "Today is your lucky day!";
     }
-
 }
             </code></pre>
-            <p>接著在高階物件Coach(被注入的)以constructor injection方式注入.</p>
+
+            <p>接著在高階物件Coach(被注入的)以setter injection方式注入.</p>
             <p>2.Coach.java</p>
-            
             <pre class="prettyprint linenums"><code class="language-java">
 package com.luv2code.springdemo;
 
@@ -79,62 +69,33 @@ public interface Coach {
             </code></pre>
 
             <p>interface class 底下的 class.</p>
-            <p>BaseballCoach.java</p>
+            <p>CricketCoach.java</p>
             <pre class="prettyprint linenums"><code class="language-java">
 package com.luv2code.springdemo;
 
-public class BaseballCoach implements Coach {
+public class CricketCoach implements Coach {
     
-    // define a private field for the dependency
     private FortuneService fortuneService;
     
-    // define a constructor for dependency injection
-    public BaseballCoach(FortuneService theFortuneService) {
-        fortuneService = theFortuneService;
+    // our setter method
+    public void setFortuneService(FortuneService fortuneService) {
+        System.out.println("CricketCoach: inside setter method - setFortuneService");
+        this.fortuneService = fortuneService;
     }
-    
+
     @Override
     public String getDailyWorkout() {
-        return "Spend 30 minutes on batting practice";
+        return "Practice fast bowling for 15 minutes";
     }
 
     @Override
     public String getDailyFortune() {
-        
-        // use my fortuneService to get a fortune
-        
         return fortuneService.getFortune();
     }
+
 }
             </code></pre>
-
-            <p>TrackCoach.java</p>
-            <pre class="prettyprint linenums"><code class="language-java">
-package com.luv2code.springdemo;
-
-public class BaseballCoach implements Coach {
-    
-    // define a private field for the dependency
-    private FortuneService fortuneService;
-    
-    // define a constructor for dependency injection
-    public BaseballCoach(FortuneService theFortuneService) {
-        fortuneService = theFortuneService;
-    }
-    
-    @Override
-    public String getDailyWorkout() {
-        return "Run a hard 5k";
-    }
-
-    @Override
-    public String getDailyFortune() {
-        return "Just Do It: " + fortuneService.getFortune();
-    }
-}
-            </code></pre>
-
-            <p>除了在高階物件Coach使用constructor injection之外, 在xml裡也要寫入constructor injection. 這裡要特別注意的是在Coach裡建構constructor injcetion時引用的是注入物件的bean id屬性.</p>
+            <p>同樣地, 除了在高階物件Coach使用setter injection之外, 在xml裡也要寫入setter injection. 這裡要特別注意的是在Coach裡建構setter injcetion時引用的是注入物件的bean id屬性, 並且要增加name屬性, 其值為注入的interface class, 即fortuneService, 在高階物件對應到的是setFortuneService.</p>
             <pre class="prettyprint linenums"><code class="language-xml">
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
@@ -150,18 +111,19 @@ public class BaseballCoach implements Coach {
     
     &lt;!-- define the dependency --&gt;
     &lt;bean id=&quot;myFortuneService&quot;
-        class=&quot;com.luv2code.springdemo.RandomFortuneService&quot;&gt;
+        class=&quot;com.luv2code.springdemo.HappyFortuneService&quot;&gt;
     &lt;/bean&gt;
     
     &lt;bean id=&quot;myCoach&quot;
         class=&quot;com.luv2code.springdemo.TrackCoach&quot;&gt;
         
-        &lt;!-- set up constructor injection --&gt;
-        &lt;constructor-arg ref=&quot;myFortuneService&quot;/&gt;
+        &lt;!-- set up setter injection --&gt;
+        &lt;property name=&quot;fortuneService&quot; ref=&quot;myFortuneService&quot;/&gt;
     &lt;/bean&gt;
     
 &lt;/beans&gt;
             </code></pre>
+
             <p>最後是我們的mainApp</p>
             <pre class="prettyprint linenums"><code class="language-java">
 package com.luv2code.springdemo;
@@ -193,6 +155,7 @@ public class HelloSpringApp {
 }   
             </code></pre>
             <p>最後, 如果想換ForturnService或Coach的class, 直接在xml更改就可以了, 其餘不需要更動。</p>
+
 
         </div>
     </section>
