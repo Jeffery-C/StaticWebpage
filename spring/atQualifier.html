@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>@Qualifier</title>
+
+    <!-- bootstap css and javascript default -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- code block style -->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=sunburst"></script>
+    <style>
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8 {
+          list-style-type: decimal !important;
+        }
+    </style>
+
+    <!-- my css -->
+    <link rel="stylesheet" href="/staticWebpage/resources/css/styles.css">
+
+</head>
+
+<body>
+
+    <section>
+        <div class="container">
+            <a href="/staticWebpage/index.html">首頁</a>
+            <h2>@Qualifier</h2>
+            <p>@Qualifier可以指定要注入bean id的, 避免有多個注入的interface class底下的class(@Component).</p>
+
+            <p>這裡我們建立要注入的interface class(FortuneService)底下有2個class, 接著指定randomFortuneService作為注入的物件.</p>
+
+            <p>1.FortuneService.java</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+public interface FortuneService {
+
+    public String getFortune();
+    
+}
+            </code></pre>
+
+            <p>FortuneService底下的class</p>
+            <p>HappyFortuneService.java</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class HappyFortuneService implements FortuneService {
+
+    @Override
+    public String getFortune() {
+        return "Today is your lucky day!";
+    }
+
+}
+            </code></pre>
+
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+import java.util.Random;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class RandomFortuneService implements FortuneService {
+    
+    // create an array of strings
+    private String[] data = {
+            "Beware of the wolf in sheep's clothing",
+            "Diligence is the mother of good luck",
+            "The journey is the reward"
+    };
+    
+    // create a random number generator
+    private Random myRandom = new Random();
+    
+    @Override
+    public String getFortune() {
+        // pick a random string from the array
+        int index = myRandom.nextInt(data.length);
+        
+        String theFortune = data[index];
+        
+        return theFortune;
+    }
+
+}
+            </code></pre>
+
+            <p>接著在高階物件Coach中用@Qualifier指定randomFortuneService作為注入的class.</p>
+
+            <p>TennisCoach.java</p>
+            <p>case 1.field injection</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TennisCoach implements Coach {
+    
+    // define a constructor for dependency injection
+    @Autowired
+    @Qualifier("randomFortuneService")
+    private FortuneService fortuneService;
+    
+    @Override
+    public String getDailyWorkout() {
+        return "Spend 30 minutes on batting practice";
+    }
+
+    @Override
+    public String getDailyFortune() {
+        
+        // use my fortuneService to get a fortune
+        
+        return fortuneService.getFortune();
+    }
+}
+            </code></pre>
+
+            <p>case 2.constructor injection</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TennisCoach implements Coach {
+    
+    // define a constructor for dependency injection
+    
+    private FortuneService fortuneService;
+
+    @Autowired
+    public TennisCoach(@Qualifier("randomFortuneService") FortuneService theFortuneService) {
+
+        fortuneService = theFortuneService;
+    }
+    
+    @Override
+    public String getDailyWorkout() {
+        return "Spend 30 minutes on batting practice";
+    }
+
+    @Override
+    public String getDailyFortune() {
+        
+        // use my fortuneService to get a fortune
+        
+        return fortuneService.getFortune();
+    }
+}
+            </code></pre>
+
+            <p>case 3.setter injection</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TennisCoach implements Coach {
+    
+    // define a constructor for dependency injection
+    
+    private FortuneService fortuneService;
+
+    @Autowired
+    @Qualifier("randomFortuneService")
+    public void setFortuneService(FortuneService theFortuneService) {
+        System.out.println(">> TennisCoach: inside setFortuneService() method");
+        this.fortuneService = theFortuneService;
+    }
+    
+    @Override
+    public String getDailyWorkout() {
+        return "Spend 30 minutes on batting practice";
+    }
+
+    @Override
+    public String getDailyFortune() {
+        
+        // use my fortuneService to get a fortune
+        
+        return fortuneService.getFortune();
+    }
+}
+            </code></pre>
+            <p>或是放在上面也可以</p>
+            <pre class="prettyprint linenums"><code class="language-java">
+package com.luv2code.springdemo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TennisCoach implements Coach {
+    
+    // define a constructor for dependency injection
+    
+    private FortuneService fortuneService;
+
+    @Autowired
+    @Qualifier("randomFortuneService")
+    public void setFortuneService(FortuneService theFortuneService) {
+        System.out.println(">> TennisCoach: inside setFortuneService() method");
+        this.fortuneService = theFortuneService;
+    }
+    
+    @Override
+    public String getDailyWorkout() {
+        return "Spend 30 minutes on batting practice";
+    }
+
+    @Override
+    public String getDailyFortune() {
+        
+        // use my fortuneService to get a fortune
+        
+        return fortuneService.getFortune();
+    }
+}
+            </code></pre>
+
+
+        </div>
+    </section>
+    
+</body>
+
+
+</html>

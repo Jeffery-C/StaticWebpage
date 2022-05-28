@@ -35,6 +35,12 @@
                         <ol>
                             <li>Constructor Injection (建構元注入)</li>
                             <li>Setter Injection (設值方法注入)</li>
+                            <li>Constructor Injection vs Setter Injection
+                                <ul>
+                                    <li>建構元注入是在調用這個class就必須注入物件, 所以一開始就決定了注入的物件, 而且沒辦法更改.</li>
+                                    <li>設值方法則是調用這個class不需要注入物件, 而是使用set方法注入, 也就是說當你想改注入物件的屬性時, 用set方法重新改動就可以了, 但前者沒辦法.</li>
+                                </ul>
+                            </li>
                             <li><a href="/staticWebpage/spring/interfaceInjection.html">Interface Injection (介面注入)</a></li>
                         </ol>
                     </li>
@@ -53,6 +59,10 @@
                         <a href="/staticWebpage/spring/atComponent.html">使用@Component取代bean tag</a>
                     </li>
                     <li><a href="/staticWebpage/spring/makeCIuseCompScan.html">constructor injection using component-scan</a></li>
+                    <li><a href="/staticWebpage/spring/makeSIuseCompScan.html">setter injection using component-scan</a></li>
+                    <li><a href="/staticWebpage/spring/fieldInjection.html">Field injection</a></li>
+                    <li><a href="/staticWebpage/spring/atQualifier.html">@Qualifier</a></li>
+                    <li><a href="/staticWebpage/spring/injectPropFileuseAtValue.html">inject properties file using @Value</a></li>
                 </ol>
             </li>
         </ol>
